@@ -9,7 +9,10 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons:
-  # Add any other dependencies here
+  path_provider:
+  pdf:
+  open_file:
+  shared_preferences:
 
 flutter:
   uses-material-design: true
