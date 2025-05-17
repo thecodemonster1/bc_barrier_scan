@@ -1,3 +1,4 @@
+import 'package:bc_barrier_scan/screens/combined_barriers_page.dart';
 import 'package:flutter/material.dart';
 import 'barrier_selection_page.dart';
 
@@ -89,7 +90,7 @@ class _OrganizationInfoPageState extends State<OrganizationInfoPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => BarrierSelectionPage(
+                            builder: (context) => CombinedBarriersPage(
                               organizationName: _orgNameController.text,
                               projectName: _projectNameController.text,
                             ),
