@@ -293,21 +293,21 @@ class _BarrierSelectionPageState extends State<BarrierSelectionPage> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Text(
-                        'Weight: ${(weight * 100).toStringAsFixed(0)}%',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey.shade700,
-                        ),
-                      ),
+                      // Text(
+                      //   'Weight: ${(weight * 100).toStringAsFixed(0)}%',
+                      //   style: TextStyle(
+                      //     fontSize: 14,
+                      //     color: Colors.grey.shade700,
+                      //   ),
+                      // ),
                     ],
                   ),
-                  const Spacer(),
-                  Checkbox(
-                    value: isSelected,
-                    onChanged: (_) => onTap(),
-                    activeColor: Colors.blue.shade700,
-                  ),
+                  // const Spacer(),
+                  // Checkbox(
+                  //   value: isSelected,
+                  //   onChanged: (_) => onTap(),
+                  //   activeColor: Colors.blue.shade700,
+                  // ),
                 ],
               ),
               const SizedBox(height: 8),
