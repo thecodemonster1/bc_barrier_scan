@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import '../data/barriers_data.dart';
 import '../utils/score_calculator.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:pdf/pdf.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:open_file/open_file.dart';
+import 'dart:io';
 
 class ReportPage extends StatelessWidget {
   final String organizationName;
@@ -27,13 +32,14 @@ class ReportPage extends StatelessWidget {
         technologicalBarriers, 'technological');
     double organizationalScore = ScoreCalculator.calculateCategoryScore(
         organizationalBarriers, 'organizational');
-    
+
     // Calculate total score
-    double totalScore = regulatoryScore + technologicalScore + organizationalScore;
-    
+    double totalScore =
+        regulatoryScore + technologicalScore + organizationalScore;
+
     // Calculate percentage score (out of 100%)
     double percentageScore = totalScore * 100;
-    
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('BC Integration Assessment Report'),
@@ -96,37 +102,34 @@ class ReportPage extends StatelessWidget {
             ),
             if (regulatoryBarriers != null)
               _buildCategoryReportCard(
-                context,
-                'Regulatory Barriers',
-                regulatoryBarriers!,
-                BarriersData.categoryWeights['regulatory']!,
-                Icons.gavel,
-                Colors.red.shade100,
-                Colors.red.shade700,
-                'regulatory'
-              ),
+                  context,
+                  'Regulatory Barriers',
+                  regulatoryBarriers!,
+                  BarriersData.categoryWeights['regulatory']!,
+                  Icons.gavel,
+                  Colors.red.shade100,
+                  Colors.red.shade700,
+                  'regulatory'),
             if (technologicalBarriers != null)
               _buildCategoryReportCard(
-                context,
-                'Technological Barriers',
-                technologicalBarriers!,
-                BarriersData.categoryWeights['technological']!,
-                Icons.computer,
-                Colors.blue.shade100,
-                Colors.blue.shade700,
-                'technological'
-              ),
+                  context,
+                  'Technological Barriers',
+                  technologicalBarriers!,
+                  BarriersData.categoryWeights['technological']!,
+                  Icons.computer,
+                  Colors.blue.shade100,
+                  Colors.blue.shade700,
+                  'technological'),
             if (organizationalBarriers != null)
               _buildCategoryReportCard(
-                context,
-                'Organizational Barriers',
-                organizationalBarriers!,
-                BarriersData.categoryWeights['organizational']!,
-                Icons.people,
-                Colors.green.shade100,
-                Colors.green.shade700,
-                'organizational'
-              ),
+                  context,
+                  'Organizational Barriers',
+                  organizationalBarriers!,
+                  BarriersData.categoryWeights['organizational']!,
+                  Icons.people,
+                  Colors.green.shade100,
+                  Colors.green.shade700,
+                  'organizational'),
             const SizedBox(height: 24),
             _buildRecommendationsSection(percentageScore),
             const SizedBox(height: 24),
@@ -201,9 +204,10 @@ class ReportPage extends StatelessWidget {
   ) {
     // Calculate category score
     double rawScore = ScoreCalculator.calculateRawCategoryScore(barriers);
-    double weightedScore = ScoreCalculator.calculateCategoryScore(barriers, categoryType);
+    double weightedScore =
+        ScoreCalculator.calculateCategoryScore(barriers, categoryType);
     double categoryPercentage = (weightedScore / categoryWeight) * 100;
-    
+
     // Get selected barriers
     List<String> selectedBarrierCodes = barriers.entries
         .where((entry) => entry.value)
@@ -300,7 +304,8 @@ class ReportPage extends StatelessWidget {
                                     ),
                                     Expanded(
                                       child: Text(
-                                        BarriersData.barriersInfo[code]?['description'] ??
+                                        BarriersData.barriersInfo[code]
+                                                ?['description'] ??
                                             'Unknown',
                                       ),
                                     ),
@@ -326,34 +331,62 @@ class ReportPage extends StatelessWidget {
   }
 
   Widget _buildRecommendationsSection(double score) {
-    List<String> recommendations = [];
-    
-    if (score > 60) {
-      recommendations = [
-        'Consider starting with small proof-of-concept projects',
-        'Invest in training and education about blockchain technology',
-        'Engage with regulatory bodies to address compliance concerns',
-        'Partner with experienced blockchain implementation specialists',
-        'Create a detailed implementation roadmap addressing identified barriers'
-      ];
-    } else if (score > 30) {
-      recommendations = [
-        'Identify specific use cases where blockchain adds clear value',
-        'Build partnerships with technology providers experienced in blockchain',
-        'Develop a phased implementation strategy',
-        'Conduct training programs to address knowledge gaps',
-        'Start with non-critical applications to gain experience'
-      ];
-    } else {
-      recommendations = [
-        'Proceed with blockchain implementation planning',
-        'Document your integration process to share best practices',
-        'Consider becoming a mentor organization to others in your industry',
-        'Focus on optimizing your blockchain implementation',
-        'Explore advanced blockchain features for your business'
-      ];
+    // Map barrier codes to specific recommendations
+    final Map<String, String> barrierRecommendations = {
+      // Regulatory
+      'C6':
+          'Advocate for clear blockchain regulations with industry groups and policymakers.',
+      'C2':
+          'Develop risk mitigation strategies for market-based uncertainties.',
+      'C5':
+          'Organize awareness and training sessions for staff and stakeholders.',
+      'C1': 'Consult legal experts to navigate regulatory uncertainty.',
+      'C3': 'Explore funding or partnerships to offset sustainability costs.',
+      'C4': 'Implement robust compliance and anti-fraud measures.',
+      // Technological
+      'A4':
+          'Simplify technical architecture and provide technical documentation.',
+      'A2': 'Work closely with IT teams to ensure seamless integration.',
+      'A3': 'Adopt or contribute to open standards for blockchain.',
+      'A5':
+          'Conduct risk assessments and pilot new technologies in controlled environments.',
+      'A1': 'Plan for scalability from the outset and monitor performance.',
+      'A7': 'Optimize blockchain protocols for energy efficiency.',
+      'A6': 'Implement strong privacy and data protection measures.',
+      // Organizational
+      'B5': 'Foster a culture open to innovation and change.',
+      'B4': 'Engage stakeholders early and address their concerns.',
+      'B3': 'Invest in training and resource development.',
+      'B2': 'Recruit or upskill staff in blockchain technologies.',
+      'B1': 'Provide ongoing education and training for employees.',
+      'B6': 'Break down implementation into manageable steps.',
+      'B7': 'Encourage research and collaboration with academic institutions.',
+    };
+
+    // Gather selected barriers
+    final selectedCodes = [
+      ...?regulatoryBarriers?.entries.where((e) => e.value).map((e) => e.key),
+      ...?technologicalBarriers?.entries
+          .where((e) => e.value)
+          .map((e) => e.key),
+      ...?organizationalBarriers?.entries
+          .where((e) => e.value)
+          .map((e) => e.key),
+    ];
+
+    // Build recommendations for selected barriers
+    final recommendations = selectedCodes
+        .map((code) => barrierRecommendations[code])
+        .where((rec) => rec != null)
+        .toSet()
+        .toList();
+
+    // Fallback if none selected
+    if (recommendations.isEmpty) {
+      recommendations.add(
+          'No specific barriers selected. Proceed with general best practices for blockchain integration.');
     }
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -372,16 +405,16 @@ class ReportPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ...recommendations.map((recommendation) => Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Icon(Icons.arrow_right, color: Colors.blue.shade700),
-                      const SizedBox(width: 8),
-                      Expanded(child: Text(recommendation)),
-                    ],
-                  ),
-                )),
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(Icons.arrow_right, color: Colors.blue.shade700),
+                          const SizedBox(width: 8),
+                          Expanded(child: Text(recommendation!)),
+                        ],
+                      ),
+                    )),
               ],
             ),
           ),
@@ -390,27 +423,117 @@ class ReportPage extends StatelessWidget {
     );
   }
 
-  void _shareReport(BuildContext context) {
-    // In a real app, this would generate and share the report
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Report Shared'),
-        content: const Text(
-          'Your BC Integration Barriers report has been generated and is ready to share.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: Text(
-              'OK',
-              style: TextStyle(color: Colors.blue.shade700),
-            ),
-          ),
+  Future<void> _shareReport(BuildContext context) async {
+    final pdf = pw.Document();
+
+    pdf.addPage(
+      pw.MultiPage(
+        build: (pw.Context context) => [
+          pw.Text('BC Integration Barriers Report',
+              style: pw.TextStyle(
+                  fontSize: 24, fontWeight: pw.FontWeight.bold)),
+          pw.SizedBox(height: 12),
+          pw.Text('Organization: $organizationName'),
+          pw.Text('Project: $projectName'),
+          pw.SizedBox(height: 12),
+          pw.Text(
+              'Total Score: ${((ScoreCalculator.calculateCategoryScore(
+                              regulatoryBarriers, "regulatory") +
+                          ScoreCalculator.calculateCategoryScore(
+                              technologicalBarriers, "technological") +
+                          ScoreCalculator.calculateCategoryScore(
+                              organizationalBarriers, "organizational")) *
+                      100).toStringAsFixed(1)}%'),
+          pw.SizedBox(height: 12),
+          pw.Text('Selected Barriers:',
+              style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+          ...[
+            ...?regulatoryBarriers
+                ?.entries
+                .where((e) => e.value)
+                .map((e) => pw.Bullet(
+                    text:
+                        'Regulatory: ${e.key} - ${BarriersData.barriersInfo[e.key]?['description'] ?? ''}')),
+            ...?technologicalBarriers
+                ?.entries
+                .where((e) => e.value)
+                .map((e) => pw.Bullet(
+                    text:
+                        'Technological: ${e.key} - ${BarriersData.barriersInfo[e.key]?['description'] ?? ''}')),
+            ...?organizationalBarriers
+                ?.entries
+                .where((e) => e.value)
+                .map((e) => pw.Bullet(
+                    text:
+                        'Organizational: ${e.key} - ${BarriersData.barriersInfo[e.key]?['description'] ?? ''}')),
+          ],
+          pw.SizedBox(height: 12),
+          pw.Text('Recommendations:',
+              style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+          ..._getPdfRecommendations(),
         ],
       ),
     );
+
+    final output = await getTemporaryDirectory();
+    final file = File('${output.path}/bc_barriers_report.pdf');
+    await file.writeAsBytes(await pdf.save());
+    await OpenFile.open(file.path);
+  }
+
+  // Helper for PDF recommendations
+  List<pw.Widget> _getPdfRecommendations() {
+    final Map<String, String> barrierRecommendations = {
+      // Regulatory
+      'C6':
+          'Advocate for clear blockchain regulations with industry groups and policymakers.',
+      'C2':
+          'Develop risk mitigation strategies for market-based uncertainties.',
+      'C5':
+          'Organize awareness and training sessions for staff and stakeholders.',
+      'C1': 'Consult legal experts to navigate regulatory uncertainty.',
+      'C3': 'Explore funding or partnerships to offset sustainability costs.',
+      'C4': 'Implement robust compliance and anti-fraud measures.',
+      // Technological
+      'A4':
+          'Simplify technical architecture and provide technical documentation.',
+      'A2': 'Work closely with IT teams to ensure seamless integration.',
+      'A3': 'Adopt or contribute to open standards for blockchain.',
+      'A5':
+          'Conduct risk assessments and pilot new technologies in controlled environments.',
+      'A1': 'Plan for scalability from the outset and monitor performance.',
+      'A7': 'Optimize blockchain protocols for energy efficiency.',
+      'A6': 'Implement strong privacy and data protection measures.',
+      // Organizational
+      'B5': 'Foster a culture open to innovation and change.',
+      'B4': 'Engage stakeholders early and address their concerns.',
+      'B3': 'Invest in training and resource development.',
+      'B2': 'Recruit or upskill staff in blockchain technologies.',
+      'B1': 'Provide ongoing education and training for employees.',
+      'B6': 'Break down implementation into manageable steps.',
+      'B7': 'Encourage research and collaboration with academic institutions.',
+    };
+
+    final selectedCodes = [
+      ...?regulatoryBarriers?.entries.where((e) => e.value).map((e) => e.key),
+      ...?technologicalBarriers?.entries.where((e) => e.value).map((e) => e.key),
+      ...?organizationalBarriers?.entries.where((e) => e.value).map((e) => e.key),
+    ];
+
+    final recommendations = selectedCodes
+        .map((code) => barrierRecommendations[code])
+        .where((rec) => rec != null)
+        .toSet()
+        .toList();
+
+    if (recommendations.isEmpty) {
+      return [
+        pw.Bullet(
+            text:
+                'No specific barriers selected. Proceed with general best practices for blockchain integration.')
+      ];
+    }
+
+    return recommendations.map((rec) => pw.Bullet(text: rec!)).toList();
   }
 }
