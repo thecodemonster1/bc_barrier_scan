@@ -57,137 +57,153 @@ class _BarrierSelectionPageState extends State<BarrierSelectionPage> {
       appBar: AppBar(
         title: const Text('Select Barrier Categories'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Organization: ${widget.organizationName}',
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Text(
-              'Project: ${widget.projectName}',
-              style: const TextStyle(
-                fontSize: 16,
-                color: Colors.black87,
-              ),
-            ),
-            const SizedBox(height: 32),
-            const Text(
-              'Select barrier categories to assess:',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 16),
-            _buildCategoryCard(
-              title: 'Regulatory Barriers',
-              description: 'Laws, regulations, and market challenges',
-              icon: Icons.gavel,
-              isSelected: _regulatorySelected,
-              weight: 0.74,
-              onTap: () {
-                setState(() {
-                  _regulatorySelected = !_regulatorySelected;
-                });
-              },
-              onViewDetails: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => BarrierDetailsPage(
-                      title: 'Regulatory Barriers',
-                      barrierType: 'regulatory',
-                      weight: 0.74,
-                      barriers: _regulatoryBarriers,
-                      organizationName: widget.organizationName,
-                      projectName: widget.projectName,
-                      onBarriersUpdated: (Map<String, bool> updatedBarriers) {
-                        setState(() {
-                          _regulatoryBarriers.clear();
-                          _regulatoryBarriers.addAll(updatedBarriers);
-                        });
-                      },
+      body: Column(
+        children: [
+          // Scrollable content area
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Organization: ${widget.organizationName}',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                );
-              },
-            ),
-            const SizedBox(height: 16),
-            _buildCategoryCard(
-              title: 'Technological Barriers',
-              description: 'Integration, standardization, and technical risks',
-              icon: Icons.computer,
-              isSelected: _technologicalSelected,
-              weight: 0.19,
-              onTap: () {
-                setState(() {
-                  _technologicalSelected = !_technologicalSelected;
-                });
-              },
-              onViewDetails: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => BarrierDetailsPage(
-                      title: 'Technological Barriers',
-                      barrierType: 'technological',
-                      weight: 0.19,
-                      barriers: _technologicalBarriers,
-                      organizationName: widget.organizationName,
-                      projectName: widget.projectName,
-                      onBarriersUpdated: (Map<String, bool> updatedBarriers) {
-                        setState(() {
-                          _technologicalBarriers.clear();
-                          _technologicalBarriers.addAll(updatedBarriers);
-                        });
-                      },
+                  Text(
+                    'Project: ${widget.projectName}',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.black87,
                     ),
                   ),
-                );
-              },
-            ),
-            const SizedBox(height: 16),
-            _buildCategoryCard(
-              title: 'Organizational Barriers',
-              description: 'Culture, workforce, and training limitations',
-              icon: Icons.people,
-              isSelected: _organizationalSelected,
-              weight: 0.08,
-              onTap: () {
-                setState(() {
-                  _organizationalSelected = !_organizationalSelected;
-                });
-              },
-              onViewDetails: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => BarrierDetailsPage(
-                      title: 'Organizational Barriers',
-                      barrierType: 'organizational',
-                      weight: 0.08,
-                      barriers: _organizationalBarriers,
-                      organizationName: widget.organizationName,
-                      projectName: widget.projectName,
-                      onBarriersUpdated: (Map<String, bool> updatedBarriers) {
-                        setState(() {
-                          _organizationalBarriers.clear();
-                          _organizationalBarriers.addAll(updatedBarriers);
-                        });
-                      },
+                  const SizedBox(height: 32),
+                  const Text(
+                    'Select barrier categories to assess:',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                );
-              },
+                  const SizedBox(height: 16),
+                  _buildCategoryCard(
+                    title: 'Regulatory Barriers',
+                    description: 'Laws, regulations, and market challenges',
+                    icon: Icons.gavel,
+                    isSelected: _regulatorySelected,
+                    weight: 0.74,
+                    onTap: () {
+                      setState(() {
+                        _regulatorySelected = !_regulatorySelected;
+                      });
+                    },
+                    onViewDetails: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => BarrierDetailsPage(
+                            title: 'Regulatory Barriers',
+                            barrierType: 'regulatory',
+                            weight: 0.74,
+                            barriers: _regulatoryBarriers,
+                            organizationName: widget.organizationName,
+                            projectName: widget.projectName,
+                            onBarriersUpdated:
+                                (Map<String, bool> updatedBarriers) {
+                              setState(() {
+                                _regulatoryBarriers.clear();
+                                _regulatoryBarriers.addAll(updatedBarriers);
+                              });
+                            },
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  _buildCategoryCard(
+                    title: 'Technological Barriers',
+                    description:
+                        'Integration, standardization, and technical risks',
+                    icon: Icons.computer,
+                    isSelected: _technologicalSelected,
+                    weight: 0.19,
+                    onTap: () {
+                      setState(() {
+                        _technologicalSelected = !_technologicalSelected;
+                      });
+                    },
+                    onViewDetails: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => BarrierDetailsPage(
+                            title: 'Technological Barriers',
+                            barrierType: 'technological',
+                            weight: 0.19,
+                            barriers: _technologicalBarriers,
+                            organizationName: widget.organizationName,
+                            projectName: widget.projectName,
+                            onBarriersUpdated:
+                                (Map<String, bool> updatedBarriers) {
+                              setState(() {
+                                _technologicalBarriers.clear();
+                                _technologicalBarriers.addAll(updatedBarriers);
+                              });
+                            },
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  _buildCategoryCard(
+                    title: 'Organizational Barriers',
+                    description: 'Culture, workforce, and training limitations',
+                    icon: Icons.people,
+                    isSelected: _organizationalSelected,
+                    weight: 0.08,
+                    onTap: () {
+                      setState(() {
+                        _organizationalSelected = !_organizationalSelected;
+                      });
+                    },
+                    onViewDetails: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => BarrierDetailsPage(
+                            title: 'Organizational Barriers',
+                            barrierType: 'organizational',
+                            weight: 0.08,
+                            barriers: _organizationalBarriers,
+                            organizationName: widget.organizationName,
+                            projectName: widget.projectName,
+                            onBarriersUpdated:
+                                (Map<String, bool> updatedBarriers) {
+                              setState(() {
+                                _organizationalBarriers.clear();
+                                _organizationalBarriers.addAll(updatedBarriers);
+                              });
+                            },
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 24), // Add some padding at the bottom
+                ],
+              ),
             ),
-            const Spacer(),
-            SizedBox(
+          ),
+
+          // Fixed button at the bottom
+          Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
                 onPressed: (_regulatorySelected ||
@@ -227,8 +243,8 @@ class _BarrierSelectionPageState extends State<BarrierSelectionPage> {
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
