@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'barrier_details_page.dart';
 import 'report_page.dart';
+import '../widgets/category_card.dart';
 
 class BarrierSelectionPage extends StatefulWidget {
   final String organizationName;
@@ -23,33 +24,36 @@ class _BarrierSelectionPageState extends State<BarrierSelectionPage> {
 
   // Selected barriers within each category
   final Map<String, bool> _regulatoryBarriers = {
-    'C6': false, // No Laws
-    'C2': false, // Market-Based Risks
-    'C5': false, // Lack of Awareness and Expertise
-    'C1': false, // Regulatory Uncertainty
-    'C3': false, // High Sustainability Costs
-    'C4': false, // Usage in Underground Economy
+    'C6': false,
+    'C2': false,
+    'C5': false,
+    'C1': false,
+    'C3': false,
+    'C4': false,
   };
 
   final Map<String, bool> _technologicalBarriers = {
-    'A4': false, // Technological Complexity
-    'A2': false, // Integration Problems
-    'A3': false, // Lack of Standardization
-    'A5': false, // Technology Risks
-    'A1': false, // Scalability Issues
-    'A7': false, // Energy Consumption of Blockchain
-    'A6': false, // Privacy Risks
+    'A4': false,
+    'A2': false,
+    'A3': false,
+    'A5': false,
+    'A1': false,
+    'A7': false,
+    'A6': false,
   };
 
   final Map<String, bool> _organizationalBarriers = {
-    'B5': false, // Cultural and Organizational Barriers
-    'B4': false, // Stakeholder Resistance
-    'B3': false, // Training and Resource Limitations
-    'B2': false, // Limited Skilled Workforce/ Resource Persons
-    'B1': false, // Lack of Knowledge/Employee Training
-    'B6': false, // Complexity of Establishment
-    'B7': false, // Limited research
+    'B5': false,
+    'B4': false,
+    'B3': false,
+    'B2': false,
+    'B1': false,
+    'B6': false,
+    'B7': false,
   };
+
+  bool get _anySelected =>
+      _regulatorySelected || _technologicalSelected || _organizationalSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -59,37 +63,43 @@ class _BarrierSelectionPageState extends State<BarrierSelectionPage> {
       ),
       body: Column(
         children: [
-          // Scrollable content area
+          Container(
+            color: Colors.blue.shade50,
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Organization: ${widget.organizationName}',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  'Project: ${widget.projectName}',
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.black87,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'Select barrier categories to assess:',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+              ],
+            ),
+          ),
           Expanded(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(24.0),
+              padding: const EdgeInsets.all(16),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Organization: ${widget.organizationName}',
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    'Project: ${widget.projectName}',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.black87,
-                    ),
-                  ),
-                  const SizedBox(height: 32),
-                  const Text(
-                    'Select barrier categories to assess:',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  _buildCategoryCard(
+                  CategoryCard(
                     title: 'Regulatory Barriers',
                     description: 'Laws, regulations, and market challenges',
                     icon: Icons.gavel,
@@ -116,6 +126,8 @@ class _BarrierSelectionPageState extends State<BarrierSelectionPage> {
                               setState(() {
                                 _regulatoryBarriers.clear();
                                 _regulatoryBarriers.addAll(updatedBarriers);
+                                _regulatorySelected =
+                                    updatedBarriers.values.contains(true);
                               });
                             },
                           ),
@@ -124,7 +136,7 @@ class _BarrierSelectionPageState extends State<BarrierSelectionPage> {
                     },
                   ),
                   const SizedBox(height: 16),
-                  _buildCategoryCard(
+                  CategoryCard(
                     title: 'Technological Barriers',
                     description:
                         'Integration, standardization, and technical risks',
@@ -152,6 +164,8 @@ class _BarrierSelectionPageState extends State<BarrierSelectionPage> {
                               setState(() {
                                 _technologicalBarriers.clear();
                                 _technologicalBarriers.addAll(updatedBarriers);
+                                _technologicalSelected =
+                                    updatedBarriers.values.contains(true);
                               });
                             },
                           ),
@@ -160,7 +174,7 @@ class _BarrierSelectionPageState extends State<BarrierSelectionPage> {
                     },
                   ),
                   const SizedBox(height: 16),
-                  _buildCategoryCard(
+                  CategoryCard(
                     title: 'Organizational Barriers',
                     description: 'Culture, workforce, and training limitations',
                     icon: Icons.people,
@@ -187,6 +201,8 @@ class _BarrierSelectionPageState extends State<BarrierSelectionPage> {
                               setState(() {
                                 _organizationalBarriers.clear();
                                 _organizationalBarriers.addAll(updatedBarriers);
+                                _organizationalSelected =
+                                    updatedBarriers.values.contains(true);
                               });
                             },
                           ),
@@ -194,21 +210,16 @@ class _BarrierSelectionPageState extends State<BarrierSelectionPage> {
                       );
                     },
                   ),
-                  const SizedBox(height: 24), // Add some padding at the bottom
                 ],
               ),
             ),
           ),
-
-          // Fixed button at the bottom
           Padding(
-            padding: const EdgeInsets.all(24.0),
+            padding: const EdgeInsets.all(16.0),
             child: SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
-                onPressed: (_regulatorySelected ||
-                        _technologicalSelected ||
-                        _organizationalSelected)
+                onPressed: _anySelected
                     ? () {
                         Navigator.push(
                           context,
@@ -245,91 +256,6 @@ class _BarrierSelectionPageState extends State<BarrierSelectionPage> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildCategoryCard({
-    required String title,
-    required String description,
-    required IconData icon,
-    required bool isSelected,
-    required double weight,
-    required VoidCallback onTap,
-    required VoidCallback onViewDetails,
-  }) {
-    return Card(
-      elevation: 3,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: BorderSide(
-          color: isSelected ? Colors.blue.shade700 : Colors.transparent,
-          width: 2,
-        ),
-      ),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Icon(
-                    icon,
-                    size: 32,
-                    color: Colors.blue.shade700,
-                  ),
-                  const SizedBox(width: 16),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      // Text(
-                      //   'Weight: ${(weight * 100).toStringAsFixed(0)}%',
-                      //   style: TextStyle(
-                      //     fontSize: 14,
-                      //     color: Colors.grey.shade700,
-                      //   ),
-                      // ),
-                    ],
-                  ),
-                  // const Spacer(),
-                  // Checkbox(
-                  //   value: isSelected,
-                  //   onChanged: (_) => onTap(),
-                  //   activeColor: Colors.blue.shade700,
-                  // ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              Text(
-                description,
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.black87,
-                ),
-              ),
-              const SizedBox(height: 12),
-              TextButton.icon(
-                onPressed: onViewDetails,
-                icon: const Icon(Icons.visibility),
-                label: const Text('VIEW DETAILS'),
-                style: TextButton.styleFrom(
-                  foregroundColor: Colors.blue.shade700,
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }
