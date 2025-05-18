@@ -1,4 +1,3 @@
-import 'package:bc_barrier_scan/screens/combined_barriers_page.dart';
 import 'package:flutter/material.dart';
 import 'barrier_selection_page.dart';
 
@@ -90,7 +89,7 @@ class _OrganizationInfoPageState extends State<OrganizationInfoPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => CombinedBarriersPage(
+                            builder: (context) => BarrierSelectionPage(
                               organizationName: _orgNameController.text,
                               projectName: _projectNameController.text,
                             ),
@@ -102,7 +101,7 @@ class _OrganizationInfoPageState extends State<OrganizationInfoPage> {
                     label: const Padding(
                       padding: EdgeInsets.all(12.0),
                       child: Text(
-                        'SAVE AND CALCULATE THE BARRIERS',
+                        'SAVE AND CONTINUE',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
