@@ -32,7 +32,7 @@ class CategoryCard extends StatelessWidget {
         ),
       ),
       child: InkWell(
-        onTap: onTap,
+        onTap: onViewDetails, // Changed to directly open details
         borderRadius: BorderRadius.circular(16),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -63,11 +63,7 @@ class CategoryCard extends StatelessWidget {
                     ],
                   ),
                   const Spacer(),
-                  Checkbox(
-                    value: isSelected,
-                    onChanged: (_) => onTap(),
-                    activeColor: Colors.blue.shade700,
-                  ),
+                  // Checkbox removed
                 ],
               ),
               const SizedBox(height: 8),
@@ -78,8 +74,8 @@ class CategoryCard extends StatelessWidget {
               const SizedBox(height: 12),
               TextButton.icon(
                 onPressed: onViewDetails,
-                icon: const Icon(Icons.visibility),
-                label: const Text('VIEW DETAILS'),
+                icon: const Icon(Icons.arrow_forward),
+                label: const Text('SELECT BARRIERS'),
                 style: TextButton.styleFrom(
                   foregroundColor: Colors.blue.shade700,
                 ),
