@@ -17,7 +17,8 @@ dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/images/
+    - assets/images/University_of_Moratuwa_logo.png
+    - assets/images/uom_logo.png
   fonts:
     - family: Roboto
       fonts:
