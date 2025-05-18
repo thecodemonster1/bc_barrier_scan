@@ -34,14 +34,12 @@ class _BarrierDetailsPageState extends State<BarrierDetailsPage> {
     _selectedBarriers = Map.from(widget.barriers);
   }
 
-  // Add this method to handle checkbox changes
   void _toggleBarrier(String code, bool? value) {
     setState(() {
       _selectedBarriers[code] = value ?? false;
     });
   }
-  
-  // Add a method to select all barriers
+
   void _selectAll() {
     setState(() {
       for (var key in _selectedBarriers.keys) {
@@ -49,8 +47,7 @@ class _BarrierDetailsPageState extends State<BarrierDetailsPage> {
       }
     });
   }
-  
-  // Clear all barriers
+
   void _clearAll() {
     setState(() {
       for (var key in _selectedBarriers.keys) {
@@ -61,9 +58,9 @@ class _BarrierDetailsPageState extends State<BarrierDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    // Get barriers based on barrier type
-    final List<String> relevantBarrierCodes = _selectedBarriers.keys.toList();
-    
+    final List<String> relevantBarrierCodes = _selectedBarriers.keys.toList()
+      ..sort();
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -102,15 +99,45 @@ class _BarrierDetailsPageState extends State<BarrierDetailsPage> {
               ],
             ),
           ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(right: 16, top: 8),
+                child: Row(
+                  children: [
+                    TextButton(
+                      onPressed: _selectAll,
+                      child: Text(
+                        'Select All',
+                        style: TextStyle(color: Colors.blue.shade700),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    TextButton(
+                      onPressed: _clearAll,
+                      child: Text(
+                        'Clear All',
+                        style: TextStyle(color: Colors.red.shade700),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.all(16.0),
               itemCount: relevantBarrierCodes.length,
               itemBuilder: (context, index) {
                 final code = relevantBarrierCodes[index];
-                final description = BarriersData.barriersInfo[code]?['description'] ?? 'Unknown';
-                final weight = BarriersData.barriersInfo[code]?['weight'] ?? 0.0;
-                
+                final description = BarriersData.barriersInfo[code]
+                        ?['description'] ??
+                    'Unknown';
+                final weight =
+                    BarriersData.barriersInfo[code]?['weight'] ?? 0.0;
+
                 return Card(
                   margin: const EdgeInsets.only(bottom: 12.0),
                   shape: RoundedRectangleBorder(
@@ -119,6 +146,7 @@ class _BarrierDetailsPageState extends State<BarrierDetailsPage> {
                   elevation: 2,
                   child: CheckboxListTile(
                     title: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           code,
@@ -146,9 +174,7 @@ class _BarrierDetailsPageState extends State<BarrierDetailsPage> {
                       ),
                     ),
                     value: _selectedBarriers[code],
-                    onChanged: (bool? value) {
-                      _toggleBarrier(code, value);
-                    },
+                    onChanged: (value) => _toggleBarrier(code, value),
                     activeColor: Colors.blue.shade700,
                     contentPadding: const EdgeInsets.symmetric(
                       horizontal: 16.0,
@@ -162,40 +188,6 @@ class _BarrierDetailsPageState extends State<BarrierDetailsPage> {
           ),
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: _clearAll,
-                    style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      side: BorderSide(color: Colors.blue.shade700),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                    ),
-                    child: const Text('CLEAR ALL'),
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: _selectAll,
-                    style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      side: BorderSide(color: Colors.blue.shade700),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                    ),
-                    child: const Text('SELECT ALL'),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
             child: SizedBox(
               width: double.infinity,
               child: ElevatedButton(
