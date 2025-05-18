@@ -29,7 +29,7 @@ class StartingPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 24),
                   const Text(
-                    'Barriers of BC Integration',
+                    'BCBarrierScan',
                     style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
@@ -78,10 +78,25 @@ class StartingPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 32),
-                  const Text(
-                    '© 2025 Barriers Assessment Tool',
-                    style: TextStyle(color: Colors.black54, fontSize: 12),
+                  Image.asset(
+                    'assets/images/University_of_Moratuwa_logo.png',
+                    height: 80,
                   ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Rishfath M.R.M\nDepartment of Building Economics\nUniversity of Moratuwa',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black87,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 16),
+                  // const Text(
+                  //   '© 2025 Barriers Assessment Tool',
+                  //   style: TextStyle(color: Colors.black54, fontSize: 12),
+                  // ),
                 ],
               ),
             ),
